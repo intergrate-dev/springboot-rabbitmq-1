@@ -1,6 +1,7 @@
 package com.sxw.springbootproducer;
 
 import com.sxw.entity.Order;
+import com.sxw.springbootproducer.producer.RabbitOrderSender;
 import com.sxw.springbootproducer.service.OrderService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,14 +14,27 @@ import java.util.UUID;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SpringbootProducerApplicationTests {
-    @Autowired private OrderService orderService;
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private RabbitOrderSender rabbitOrderSender;
+
     @Test
     public void testSend() throws Exception {
+        for (int i = 0; i < 100; i++) {
+            sendMessage(i);
+        }
+    }
+
+    private void sendMessage(Integer tag) throws Exception {
         Order order = new Order();
-        order.setId(2018092101);
-        order.setName("测试订单1");
-        order.setMessageId(System.currentTimeMillis()+"$"+UUID.randomUUID().toString());
-        orderService.createOrder(order);
+        order.setId(tag);
+        order.setName("测试订单_" + tag);
+        order.setMessageId(System.currentTimeMillis() + "$" + UUID.randomUUID().toString());
+
+        // 发送消息
+        rabbitOrderSender.sendOrder(order);
     }
 
 }

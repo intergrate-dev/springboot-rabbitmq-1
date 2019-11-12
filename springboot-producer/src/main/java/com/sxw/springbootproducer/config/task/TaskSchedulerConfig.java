@@ -9,8 +9,8 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-@Configuration
-@EnableScheduling
+//@Configuration
+//@EnableScheduling
 public class TaskSchedulerConfig implements SchedulingConfigurer {
 
     @Override
@@ -18,7 +18,7 @@ public class TaskSchedulerConfig implements SchedulingConfigurer {
         taskRegistrar.setScheduler(taskScheduler());
     }
 
-    @Bean(destroyMethod="shutdown")
+    @Bean(destroyMethod="")
     public Executor taskScheduler(){
         return Executors.newScheduledThreadPool(100);
     }

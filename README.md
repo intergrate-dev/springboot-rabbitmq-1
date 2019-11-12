@@ -43,11 +43,11 @@ RabbitMQ是一个开源的消息代理和队列服务器，用来通过普通协
 - Prefetch count：如果有多个消费者同时订阅同一个Queue中的消息，Queue中的消息会被平摊给多个消费者。这时如果每个消息的处理时间不同，就有可能会导致某些消费者一直在忙，而另外一些消费者很快就处理完手头工作并一直空闲的情况。我们可以通过设置prefetchCount来限制Queue每次发送给每个消费者的消息数，比如我们设置prefetchCount=1，则Queue每次给每个消费者发送一条消息；消费者处理完这条消息后Queue会再给该消费者发送一条消息。
 
 ## 消息流转流程图
-![image](https://github.com/suxiongwei/springboot-rabbitmq/blob/master/springboot-producer/src/main/resources/static/RabbitMQ1.jpg)
+![image](https://github.com/suxiongwei/rabbitmq-demo/blob/master/springboot-producer/src/main/resources/static/RabbitMQ1.jpg)
 
 ## RabbitMQ整合SpringBoot2.x,消息可靠性传递方案100%的实现
 ### 方案流程图
-![image](https://github.com/suxiongwei/springboot-rabbitmq/blob/master/springboot-producer/src/main/resources/static/RabbitMQ2.jpg)
+![image](https://github.com/suxiongwei/rabbitmq-demo/blob/master/springboot-producer/src/main/resources/static/RabbitMQ2.jpg)
 ### 代码实现
 1. 引入相关依赖
 ```
@@ -64,11 +64,11 @@ spring:
     addresses: 192.168.221.128:5672
     username: guest
     password: guest
-    virtual-host: /
+    virtual-host: rabbit_vhost
   datasource:
-    url: jdbc:mysql://localhost:3306/rabbitmq?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://localhost:3306/rabbitmq-test?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
     username: root
-    password: root
+    password: 123456
     driverClassName: com.mysql.jdbc.Driver
 server:
   port: 8001
@@ -84,7 +84,7 @@ spring:
     addresses: 192.168.221.128:5672
     username: guest
     password: guest
-    virtual-host: /
+    virtual-host: rabbit_vhost
 ## 消费端配置
     listener:
       simple:
@@ -93,16 +93,16 @@ spring:
         max-concurrency: 10
         prefetch: 1
   datasource:
-      url: jdbc:mysql://localhost:3306/rabbitmq?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+      url: jdbc:mysql://localhost:3306/rabbitmq-test?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
       username: root
-      password: root
+      password: 123456
       driverClassName: com.mysql.jdbc.Driver
 server:
   port: 8002
   servlet:
     context-path: /
 ```
-## 完整实例代码[springboot-rabbitmq](https://github.com/suxiongwei/springboot-rabbitmq)
+## 完整实例代码[rabbitmq-demo](https://github.com/suxiongwei/rabbitmq-demo)
 
 ## 数据库文件
 ```sql
@@ -156,5 +156,14 @@ MQ比较适合
 消息的发送和处理是异步的  <br/>
 消息的关注者不止一个 <br/>
 在一个由多个微服务构成的大系统中，会有一些非关键服务，用来执行一些不需要立刻得到结果的计算。而且它们的计算结果并不会返回给消息的发送者。这个时候就应该使用MQ。
+
+
+
+
+## 消息发送确认 与 消息接收确认（ACK）
+https://www.jianshu.com/p/2c5eebfd0e95
+
+
+
 
 
